@@ -1,83 +1,44 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "./components/AuthContext";
-import Login from "./pages/Login";
-import Register from "./pages/Register";
-import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
-import ProtectedRoute from "./components/ProtectedRoute";
-import Layout from "./components/Layout";
-import { useAuth } from "./components/AuthContext";
-import Account from "./pages/Account";
-import History from "./pages/History";
+import react, { useEffect } from "react" // Add useEffect import
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom"
+import Login from "./pages/Login"
+import Register from "./pages/Register"
+import Home from "./pages/Home"
+import Search from "./pages/Search"
+import NotFound from "./pages/NotFound"
+import ProtectedRoute from "./components/ProtectedRoute"
+import Base from "./components/Base"
+import { AuthProvider, useAuth } from './components/AuthContext'; // Import useAuth
+
 function Logout() {
-  const { logout } = useAuth();
-
+  const { logout } = useAuth(); // Get logout function from AuthContext
   useEffect(() => {
-    logout();
+    logout(); // Call logout on component mount
   }, [logout]);
+  return <Navigate to="/" />;
+}
 
-  return <Navigate to="/" replace />;
+function RegisterAndLogout() {
+  localStorage.clear()
+  return <Register />
 }
 
 function App() {
-  const [isSplashActive, setIsSplashActive] = useState(false); // Changed default to false
-  const [isHomePage, setIsHomePage] = useState(false);
-
-  const handleRouteChange = (path) => {
-    setIsHomePage(path === "/");
-    if (path !== "/") {
-      setIsSplashActive(false); // Ensure splash is inactive on non-home pages
-    }
-  };
-
-  useEffect(() => {
-    // Set initial route
-    handleRouteChange(window.location.pathname);
-  }, []);
-
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Layout isSplashActive={isSplashActive} isHomePage={isHomePage}>
+        <Base>
           <Routes>
-            <Route
-              path="/"
-              element={
-                <Home
-                  onSplashStateChange={setIsSplashActive}
-                  onMount={() => handleRouteChange("/")}
-                />
-              }
-            />
-            <Route
-              path="/login"
-              element={<Login onMount={() => handleRouteChange("/login")} />}
-            />
+            <Route path="/" element={<Home />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="/register" element={<Register />} />
-            <Route
-              path="/account"
-              element={
-                <ProtectedRoute>
-                  <Account />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/history"
-              element={
-                <ProtectedRoute>
-                  <History />
-                </ProtectedRoute>
-              }
-            />
-            <Route path="*" element={<NotFound />} />
+            <Route path="/register" element={<RegisterAndLogout />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="*" element={<NotFound />}></Route>
           </Routes>
-        </Layout>
+        </Base>
       </BrowserRouter>
     </AuthProvider>
-  );
+  )
 }
 
-export default App;
+export default App

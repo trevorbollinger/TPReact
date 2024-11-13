@@ -1,139 +1,84 @@
 import { useState, useEffect } from "react";
 import api from "../api";
-import GameScore from "../components/GameScore";
-import Tutorial from '../components/Tutorial';
-import SplashScreen from '../components/SplashScreen';
-import Game from '../components/Game';
 import "../styles/Home.css";
-import { useAuth } from "../components/AuthContext";
 
-function Home({ onSplashStateChange, onMount }) {
-    const [gameScores, setGameScores] = useState([]); 
-    const [score, setScore] = useState([]); 
-    const [streak, setStreak] = useState("");
-    const { isAuthorized } = useAuth();
-    const [randomImages, setRandomImages] = useState([]); 
-    const [answerKey, setAnswerKey] = useState([]); 
-    const [currentIteration, setCurrentIteration] = useState(0);
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [gameComplete, setGameComplete] = useState(false);
-    const [prevImageIndex, setPrevImageIndex] = useState(null);
-    const [currentDate, setCurrentDate] = useState('');
-    const [showTutorial, setShowTutorial] = useState(false);
-    const [gameStarted, setGameStarted] = useState(false);
-    const [hardMode, setHardMode] = useState(false);
-
-    useEffect(() => {
-        fetchGameData();
-        const formattedDateTime = new Date().toLocaleString("en-US", { 
-            timeZone: "America/Chicago"
-        });
-        setCurrentDate(formattedDateTime);
-
-        const setVh = () => {
-            document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
-        };
-        setVh();
-        window.addEventListener('resize', setVh);
-        return () => window.removeEventListener('resize', setVh);
-    }, []);
-
-    useEffect(() => {
-        onSplashStateChange(!gameStarted);
-    }, [gameStarted, onSplashStateChange]);
-
-    const fetchGameData = () => {
-        api
-            .get("/game/game-data/")
-            .then((res) => res.data)
-            .then((data) => {
-                setRandomImages(data.image_urls); // Update state with array of image URLs
-                setAnswerKey(data.answer_key); // Update state with answer key
-                setCurrentIteration(data.current_iteration); // Update state with current iteration
-            })
-            .catch((err) => alert(err));
-    };
-
-    const handleGuess = (guess) => {
-        const correct = (guess === 'giraffe' && answerKey[currentImageIndex] === 'g') ||
-                       (guess === 'duck' && answerKey[currentImageIndex] === 'd');
-        
-        const newScore = [...score, correct ? 'y' : 'n'];
-        setScore(newScore);
-
-        if (currentImageIndex < randomImages.length - 1) {
-            setPrevImageIndex(currentImageIndex);
-            setCurrentImageIndex(prevIndex => prevIndex + 1);
-        } else {
-            setGameComplete(true);
-            setStreak(newScore.filter(s => s === 'y').length);
-            const screenResolution = `${window.screen.width}x${window.screen.height}`;
-            createGameScore(newScore, screenResolution);  // Always create score, regardless of auth status
+function Home() {
+    const carouselItems = [
+        {
+            img: "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?fm=jpg&q=60&w=3000",
+            title: "Plan Your Dream Vacation",
+            description: "Find the best deals on hotels, flights, and attractions."
+        },
+        {
+            img: "https://images.unsplash.com/photo-1500835556837-99ac94a94552?fm=jpg&q=60&w=3000",
+            title: "Discover New Destinations",
+            description: "Let us help you find your next adventure."
+        },
+        {
+            img: "https://images.unsplash.com/photo-1615544261596-dc0a4898f2c0?q=80&w=1170",
+            title: "Find the most amazing local attractions",
+            description: "A beautiful scene to inspire your travels."
+        },
+        {
+            img: "https://images.unsplash.com/photo-1573397340180-f4086e429df7?q=80&w=1170",
+            title: "Transportation",
+            description: "We assist you in choosing your desired transportation"
         }
-    };
+    ];
 
-    const resetGame = () => {
-        setCurrentImageIndex(0);
-        setScore([]);
-        setGameComplete(false);
-    };
-
-    const createGameScore = (finalScore, screenResolution) => {
-        const scoreData = {
-            score: finalScore,
-            streak: 0,
-            date: currentDate,
-            iteration: currentIteration,
-            hard_mode: hardMode,
-            screenResolution: screenResolution
-        };
-
-        api.post("/game/submit-score/", scoreData)
-            .then((res) => {
-                if (isAuthorized) {
-                    setGameScores([...gameScores.filter(gs => gs.date !== currentDate), res.data]);
-                }
-            })
-            .catch((err) => console.error("Failed to submit score:", err));
-    };
-
-    const handlePlayClick = () => {
-        setGameStarted(true);
-        onSplashStateChange(false); // Explicitly set splash to false when game starts
-    };
+    const services = [
+        { text: "Find the Perfect Accommodation" },
+        { text: "Book Your Flights" },
+        { text: "Discover Local Attractions" }
+    ];
 
     return (
-        <main>
-            {!gameStarted ? (
-                <SplashScreen 
-                    onTutorialClick={() => setShowTutorial(true)}
-                    onPlayClick={handlePlayClick} // Use the new handler
-                    currentIteration={currentIteration}
-                    hardMode={hardMode}
-                    setHardMode={setHardMode}
-                    isAuthorized={isAuthorized}  // Add this line
-                />
-            ) : (
-                <Game 
-                    currentDate={currentDate}
-                    randomImages={randomImages}
-                    score={score}
-                    currentImageIndex={currentImageIndex}
-                    prevImageIndex={prevImageIndex}
-                    gameComplete={gameComplete}
-                    handleGuess={handleGuess}
-                    resetGame={resetGame}
-                    setPrevImageIndex={setPrevImageIndex}
-                    currentIteration={currentIteration}
-                    hardMode={hardMode}
-                    isAuthorized={isAuthorized}
-                />
-            )}
+        <div>
+            <div id="myCarousel" className="carousel slide" data-ride="carousel">
+                <ol className="carousel-indicators">
+                    {carouselItems.map((_, index) => (
+                        <li key={index} data-target="#myCarousel" data-slide-to={index} className={index === 0 ? "active" : ""}></li>
+                    ))}
+                </ol>
 
-            {showTutorial && (
-                <Tutorial onClose={() => setShowTutorial(false)} />
-            )}
-        </main>
+                <div className="carousel-inner" role="listbox">
+                    {carouselItems.map((item, index) => (
+                        <div key={index} className={`item ${index === 0 ? 'active' : ''}`}>
+                            <img src={item.img} alt={item.title} />
+                            <div className="carousel-caption">
+                                <h3>{item.title}</h3>
+                                <p>{item.description}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                <a className="left carousel-control" href="#myCarousel" role="button" data-slide="prev">
+                    <span className="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+                    <span className="sr-only">Previous</span>
+                </a>
+                <a className="right carousel-control" href="#myCarousel" role="button" data-slide="next">
+                    <span className="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+                    <span className="sr-only">Next</span>
+                </a>
+            </div>
+
+            <div className="services">
+                <h2>Our Services</h2>
+                <div className="services-grid">
+                    {services.map((service, index) => (
+                        <div key={index} className="service-item">
+                            <p>{service.text}</p>
+                        </div>
+                    ))}
+                </div>
+                <div className="button-container">
+                    <a href="/search" className="button">Search for Hotels, flights, and attractions</a>
+                    <a href="/transportation" className="button">Transportation</a>
+                    <a href="/skyscannertest" className="button">Rental Cars</a>
+                </div>
+            </div>
+        </div>
     );
 }
 

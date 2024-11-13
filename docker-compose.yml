@@ -1,10 +1,10 @@
 services:
   backend:
-    container_name: GORD-backend
+    container_name: TP-backend
     build: ./backend
     restart: unless-stopped
     ports:
-      - "8060:8000"
+      - "8061:8000"
     volumes:
       - ./backend:/app
     command: >
@@ -14,11 +14,11 @@ services:
 
 
   frontend:
-    container_name: GORD-frontend
+    container_name: TP-frontend
     build: ./frontend
     restart: unless-stopped
     ports:
-      - "8070:5173"
+      - "8071:5173"
     volumes:
       - ./frontend:/app
     command: >

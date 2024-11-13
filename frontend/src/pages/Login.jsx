@@ -18,12 +18,12 @@ function Login() {
     e.preventDefault();
 
     try {
-      const res = await api.post("/game/token/", { username, password });
+      const res = await api.post("/api/token/", { username, password });
       localStorage.setItem(ACCESS_TOKEN, res.data.access);
       localStorage.setItem(REFRESH_TOKEN, res.data.refresh);
 
       // Fetch user details to get the first and last name
-      const userRes = await api.get("/game/user/me/");
+      const userRes = await api.get("/api/me/");
       const { first_name, last_name } = userRes.data;
 
       login(username, first_name, last_name); // Update isAuthorized on successful login

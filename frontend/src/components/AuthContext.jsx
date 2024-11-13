@@ -11,6 +11,15 @@ export const AuthProvider = ({ children }) => {
     const [lastName, setLastName] = useState(localStorage.getItem("last_name") || "");
     const [isStaff, setIsStaff] = useState(false);
     const [isSuperuser, setIsSuperuser] = useState(false);
+    const [authState, setAuthState] = useState({}); // Add this line
+
+    const refreshUserData = () => {
+        setUsername(localStorage.getItem("username") || "");
+        setFirstName(localStorage.getItem("first_name") || "");
+        setLastName(localStorage.getItem("last_name") || "");
+        setIsStaff(localStorage.getItem("is_staff") === "true");
+        setIsSuperuser(localStorage.getItem("is_superuser") === "true");
+    };
 
     useEffect(() => {
         const token = localStorage.getItem(ACCESS_TOKEN);
@@ -24,6 +33,7 @@ export const AuthProvider = ({ children }) => {
                 } else {
                     setIsStaff(decodedToken.is_staff === true);
                     setIsSuperuser(decodedToken.is_superuser === true);
+                    refreshUserData(); // Add this line to load user data
                 }
             } catch (error) {
                 logout();
@@ -33,24 +43,20 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (user, firstName, lastName) => {
-        const token = localStorage.getItem(ACCESS_TOKEN);
-        if (token) {
-            try {
-                const decodedToken = jwtDecode(token);
-                setIsStaff(decodedToken.is_staff === true);
-                setIsSuperuser(decodedToken.is_superuser === true);
-            } catch (error) {
-                console.error('Error decoding token:', error);
-            }
-        }
-        setIsAuthorized(true);
+    const login = (user, firstName, lastName, staff = false, superuser = false) => {
         setUsername(user);
         setFirstName(firstName);
         setLastName(lastName);
+        setIsStaff(staff);
+        setIsSuperuser(superuser);
+        setIsAuthorized(true);
+
         localStorage.setItem("username", user);
         localStorage.setItem("first_name", firstName);
         localStorage.setItem("last_name", lastName);
+        localStorage.setItem("is_staff", staff);
+        localStorage.setItem("is_superuser", superuser);
+        setAuthState({}); // Trigger re-render
     };
 
     const logout = () => {
@@ -61,6 +67,7 @@ export const AuthProvider = ({ children }) => {
         setLastName("");
         setIsStaff(false);
         setIsSuperuser(false);
+        setAuthState({}); // Trigger re-render
     };
 
     return (
@@ -72,7 +79,8 @@ export const AuthProvider = ({ children }) => {
             isStaff,
             isSuperuser,
             login, 
-            logout 
+            logout,
+            authState // Provide authState
         }}>
             {children}
         </AuthContext.Provider>

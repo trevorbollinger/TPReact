@@ -26,7 +26,7 @@ function Register() {
     }
 
     try {
-      await api.post("/game/user/register/", { username, password, first_name, last_name });
+      await api.post("/api/user/register/", { username, password, first_name, last_name });
       navigate("/login");
     } catch (error) {
       alert(error.response?.data?.detail || "An error occurred. (username already taken?)");
