@@ -2,11 +2,9 @@ import requests
 import os
 from dotenv import load_dotenv
 
-# Ensure this is at the start of the file and loads properly
 load_dotenv()
 
 def get_token_amadeus():
-    # Remove hardcoded credentials
     client_id_amadeus = os.getenv('AMADEUS_CLIENT_ID')
     client_secret_amadeus = os.getenv('AMADEUS_CLIENT_SECRET')
 
