@@ -1,0 +1,187 @@
+/* Ensure the entire page layout supports Flexbox properly */
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    margin: 0 auto 20px auto;
+    justify-content: center;
+}
+
+form label {
+    font-weight: bold;
+    color: #333;
+    white-space: nowrap;
+}
+
+form input {
+    height: 35px;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 150px;
+    box-sizing: border-box;
+    margin: 7px 0 0px 0;
+}
+
+form button {
+    height: 35px;
+    padding: 0 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 7px;
+}
+
+form button:hover {
+    background-color: #0056b3;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping on smaller screens */
+    justify-content: center; /* Changed from space-around */
+    gap: 20px; /* Space between the columns */
+    margin-top: 20px;
+    width: 100%; /* Take up most of the screen width */
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+}
+
+.column {
+    flex: 1; /* Ensures all columns take up equal space */
+    min-width: 300px; /* Smaller minimum to allow better fitting */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+    max-height: calc(100vh - 300px); /* Adjust the value as needed */
+}
+
+.column li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 15px;
+    border-top: 1px solid #eee;
+}
+
+
+.column li h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.column li img {
+    margin: 10px 0;
+    border-radius: 5px;
+    width: 200px;
+    height: auto;
+    margin-left: 20px;
+}
+
+.column li .info {
+    flex: 1;
+}
+
+.column li .info .maps-link {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #28a745;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-right: 10px
+}
+
+.column li .info .maps-link:hover {
+    background-color: #218838;
+}
+
+.column li .info p {
+    margin: 5px 0;
+    color: #666;
+}
+
+.column li .info .last-update {
+    font-size: 0.8em;
+    color: #999;
+    font-style: italic;
+}
+
+.column li .info strong {
+    color: #333;
+}
+
+.column li:last-child {
+    border-bottom: none;
+}
+
+.column li h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+}
+
+.column li img {
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.column li a {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 5px 10px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.column li a:hover {
+    background-color: #0056b3;
+}
+
+.error {
+    color: red;
+    text-align: center;
+    margin-top: 20px;
+}
+
+h3 {
+    text-align: center;
+    margin-top: 0;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+li {
+    margin-bottom: 10px;
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #ddd;
+    margin: 10px 0;
+}
+
